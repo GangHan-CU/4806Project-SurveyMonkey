@@ -15,5 +15,5 @@ This project is continuously integrated via [Travis CI](https://travis-ci.org/) 
 
 ### Schema Diagram
 
-![](E:\4806Project-SurveyMonkey\schema_diagram.png)
+![](E:\sysc4806\project\schema_diagram.png)
 
