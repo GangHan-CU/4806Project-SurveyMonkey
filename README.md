@@ -15,5 +15,5 @@ This project is continuously integrated via [Travis CI](https://travis-ci.org/) 
 
 ### Schema Diagram
 
-![](E:\sysc4806\project\schema_diagram.png)
+![](E:\sysc4806\sys4806\schema_diagram.png)
 
