@@ -15,9 +15,9 @@ import javax.persistence.*;
         visible = true
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type (value = TextQuestion.class, name = "TEXT"),
-        @JsonSubTypes.Type(value = RangeQuestion.class, name = "NUMBER"),
-        @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "MC")
+        @JsonSubTypes.Type (value = QuestionText.class, name = "TEXT"),
+        @JsonSubTypes.Type(value = QuestionNum.class, name = "NUMBER"),
+        @JsonSubTypes.Type(value = QuestionMc.class, name = "MultipleChoice")
 
 
 })
@@ -35,7 +35,7 @@ public abstract class Questions {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
     protected List<Response> responses;
 
-    public Question() {
+    public Questions() {
         responses = new ArrayList<>();
     }
 
