@@ -1,0 +1,84 @@
+package GangHanCU.MiniSurveyMonkey.sys4806;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static GangHanCU.MiniSurveyMonkey.sys4806.AuthUtils.getOauthAuthenticationFor;
+
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class AppControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    private OAuth2User principal;
+
+    @BeforeEach
+    public void setUpUser() {
+        principal = AuthUtils.createOAuth2User(
+                "Pepe Silvia", "psilvia@mailroom.gov");
+    }
+
+    @Test
+    public void checkHomePageStatus() throws Exception {
+        this.mockMvc.perform(get("/home")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void checkArchivePageStatus() throws Exception {
+        this.mockMvc.perform(get("/archive-surveys")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void checkCreateSurveyPageStatus() throws Exception {
+        this.mockMvc.perform(get("/create-survey")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void checkAnswerSurveyPageStatus() throws Exception {
+        this.mockMvc.perform(get("/survey/1")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void checkSurveyResponsesPageStatus() throws Exception {
+        this.mockMvc.perform(get("/survey/0/responses")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void checkNoAuthenticationReturnsError() throws Exception {
+        this.mockMvc.perform(get("/survey/0"))
+                .andExpect(status().is(401));
+    }
+
+    @Test
+    public void checkNoAuthenticationOnLoginReturnsError() throws Exception {
+        this.mockMvc.perform(get("/login"))
+                .andExpect(status().is(401));
+    }
+
+
+    @Test
+    public void checkNoAuthenticationOnHomeReturnsError() throws Exception {
+        this.mockMvc.perform(get("/home"))
+                .andExpect(status().is(401));
+    }
+}

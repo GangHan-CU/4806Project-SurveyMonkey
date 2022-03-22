@@ -20,5 +20,102 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static GangHanCU.MiniSurveyMonkey.sys4806.AuthUtils.getOauthAuthenticationFor;
 
+@SpringBootTest(classes={Sys4806Application.class})
+@AutoConfigureMockMvc
 public class WebAppTests {
+    @Autowired
+    private MockMvc mockMvc;
+
+    private OAuth2User principal;
+
+    @BeforeEach
+    public void setUpUser() {
+        principal = AuthUtils.createOAuth2User(
+                "Pepe Silvia", "psilvia@mailroom.gov");
+    }
+
+    @Test
+    @Order(1)
+    public void testIntegration() throws Exception {
+        //POST A SURVEY WITHOUT AUTHENTICATION
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/survey")
+                .contentType("application/json")
+                .content("{\"name\":\"Test class survey\"}"))
+                .andExpect(status().is(401))
+                .andReturn();
+
+        //POST A SURVEY
+        MvcResult surveyResult = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/survey")
+                .contentType("application/json")
+                .content("{\"name\":\"Test class survey\"" +
+                        ",\"creator\":\"/api/user/2\"}")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isCreated())
+                .andReturn();
+        MockHttpServletResponse response = surveyResult.getResponse();
+        String surveyLocation = response.getHeader("Location");
+
+        //POST A QUESTION
+        MvcResult questionResult = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/question")
+                .contentType("application/json")
+                .content("{\"survey\":\"" + surveyLocation + "\"" +
+                        ",\"type\":\"TEXT\"," +
+                        "\"prompt\":\"This is a test question\"}")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isCreated())
+                .andReturn();
+        MockHttpServletResponse questionResponse = questionResult.getResponse();
+        String questionLocation = questionResponse.getHeader("Location");
+
+        //POST A RESPONSE
+        MvcResult responseResult = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/response")
+                .contentType("application/json")
+                .content("{\"question\":\"" + questionLocation + "\"" +
+                        ",\"type\":\"TEXT\"," +
+                        "\"answer\":\"This is a test response\"}")
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isCreated())
+                .andReturn();
+        MockHttpServletResponse responseResponse = responseResult.getResponse();
+        String responseLocation = responseResponse.getHeader("Location");
+
+
+
+        //GET THE SURVEY
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/survey/" + surveyLocation.replaceAll("[^\\d.]", ""))
+                .accept(MediaType.APPLICATION_JSON)
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("Test class survey")))
+                .andExpect(jsonPath("$._links.creator.href", matchesPattern(".*/creator")));
+
+        //GET THE QUESTION
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/question/" + questionLocation.replaceAll("[^\\d.]", ""))
+                .accept(MediaType.APPLICATION_JSON)
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.prompt", is("This is a test question")));
+
+        //GET THE RESPONSE
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/response/" + responseLocation.replaceAll("[^\\d.]", ""))
+                .accept(MediaType.APPLICATION_JSON)
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.answer", is("This is a test response")));
+
+        //DELETE THE SURVEY
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .delete("/api/survey/" +surveyLocation.replaceAll("[^\\d.]", ""))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(authentication(getOauthAuthenticationFor(principal))))
+                .andExpect(status().isNoContent());
+    }
 }
