@@ -3,7 +3,7 @@
 
 This project contains the implementation of a web-app platform to create and respond to surveys
 
-This project is continuously integrated via [Travis CI](https://travis-ci.org/) and deployed on [Heroku](https://dashboard.heroku.com/apps).
+This project is continuously integrated via [Circle CI]([Continuous Integration and Delivery - CircleCI](https://circleci.com/)) and deployed on [Heroku](https://dashboard.heroku.com/apps).
 
 ## State of the Project
 
