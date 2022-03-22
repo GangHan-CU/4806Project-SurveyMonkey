@@ -13,7 +13,7 @@ public class Surveys {
     protected int ID;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "survey")
-    protected List<Question> questions;
+    protected List<Questions> questions;
 
     @ManyToOne
     private User creator;
@@ -22,13 +22,13 @@ public class Surveys {
 
     private boolean closed;
 
-    public Survey(){
+    public Surveys(){
         // create survey with default name
         this("");
     }
 
-    public Survey(String name) {
-        questions = new ArrayList<Question>();
+    public Surveys(String name) {
+        questions = new ArrayList<Questions>();
         this.name = name;
         this.closed = false;
     }
@@ -41,19 +41,19 @@ public class Surveys {
         this.ID = ID;
     }
 
-    public List<Question> getQuestions() {
+    public List<Questions> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(List<Questions> questions) {
         this.questions = questions;
     }
 
-    public void addQuestion(Question q){
+    public void addQuestion(Questions q){
         this.questions.add(q);
     }
 
-    public void removeQuestion(Question q){
+    public void removeQuestion(Questions q){
         this.questions.remove(q);
     }
 
@@ -87,7 +87,7 @@ public class Surveys {
 
     public String toString(){
         String s = "Survey "+this.getName()+" questions:\n";
-        for(Question q: questions){
+        for(Questions q: questions){
             s+=q.toString();
             s+="\n";
         }

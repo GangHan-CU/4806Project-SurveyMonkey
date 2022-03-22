@@ -29,11 +29,11 @@ public abstract class Questions {
     @SequenceGenerator(name="QUESTION_SEQ_GEN", sequenceName="QUESTION_SEQ_GEN")
     protected int ID;
     @ManyToOne(cascade = CascadeType.ALL)
-    private Survey survey;
+    private Surveys survey;
     protected QuestionType type;
     protected String prompt;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
-    protected List<Response> responses;
+    protected List<Responses> responses;
 
     public Questions() {
         responses = new ArrayList<>();
@@ -63,25 +63,25 @@ public abstract class Questions {
         return type;
     }
 
-    public Survey getSurvey(){
+    public Surveys getSurvey(){
         return this.survey;
     }
 
-    public void setSurvey(Survey survey){
+    public void setSurvey(Surveys survey){
         this.survey = survey;
     }
 
 
-    public void addResponse(Response r) {
+    public void addResponse(Responses r) {
         responses.add(r);
     }
 
 
-    public void setResponses(List<Response> responses) {
+    public void setResponses(List<Responses> responses) {
         this.responses = responses;
     }
 
-    public List<Response> getResponses(){
+    public List<Responses> getResponses(){
         return this.responses;
 
     }

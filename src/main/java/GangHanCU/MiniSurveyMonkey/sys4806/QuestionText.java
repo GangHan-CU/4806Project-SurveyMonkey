@@ -1,4 +1,17 @@
 package GangHanCU.MiniSurveyMonkey.sys4806;
 
-public class QuestionText {
+import javax.persistence.Entity;
+
+@Entity
+public class QuestionText extends Questions{
+    public QuestionText(){
+        type = QuestionType.Text;
+    }
+
+    public QuestionText(String Prompt) {
+        type = QuestionType.Text;
+        this.prompt = Prompt;
+
+
+    }
 }

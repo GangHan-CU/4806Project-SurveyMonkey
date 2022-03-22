@@ -20,7 +20,7 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "creator")
     @JsonIgnore
-    protected List<Survey> surveys;
+    protected List<Surveys> surveys;
 
     public User(){}
 
@@ -40,11 +40,11 @@ public class User {
         this.name = name;
     }
 
-    public List<Survey> getSurveys(){
+    public List<Surveys> getSurveys(){
         return this.surveys;
     }
 
-    public void setSurveys(List<Survey> surveys){
+    public void setSurveys(List<Surveys> surveys){
         this.surveys = surveys;
     }
 
